@@ -2,6 +2,7 @@ const bcryptjs = require('bcryptjs');
 const db = require('../database/models');
 const {Op} =require("sequelize");
 
+
 const mainController = {
   home: (req, res) => {
     db.Book.findAll({
@@ -46,7 +47,7 @@ const mainController = {
   },
   deleteBook: (req, res) => {
     // Implement delete book
-    db.book.destroy({
+    db.Book.destroy({
       where:{
         id:req.params.id,
       },
@@ -105,6 +106,8 @@ const mainController = {
       if(!user || !bcryptjs.compareSync(req.body.password,user.Pass)){
         return res.render("home",{
           error : "credenciales invalidas",
+          
+    
         });
       } else{
         console.log(user.email)
@@ -113,6 +116,8 @@ const mainController = {
           rol:user.categoryId,
         };
         res.locals.userLogin = req.session.userLogin;
+        res.cookie('cookie-usuario',req.session.userLogin, {maxAge : 10000 * 60});
+    
         return res.redirect("/");
       }
     })
